@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: watson-ocr-svc-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: watson-ocr-svc
+  template:
+    metadata:
+      labels:
+        app: watson-ocr-svc
+    spec:
+      containers:
+      - name: watson-ocr-service
+        image: 'registry.ng.bluemix.net/watson-ocr-service/watson-ocr-service:2018-05-04.0'
+        env:
+          - name: PORT
+            value: "8080"
+          - name: VARIABLE
+            value: "value"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "0.25"
+          limits:
+            memory: "1024Mi"
+            cpu: "0.75"
+        ports:
+        - containerPort: 8080
+          name: watson-ocr-api

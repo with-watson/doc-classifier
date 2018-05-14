@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: watson-ocr-svc-ingress
+spec:
+  tls:
+  - hosts:
+    - watson-ocr-service.withwatson-std-cluster.us-south.containers.mybluemix.net
+    secretName: withwatson-std-cluster
+  rules:
+  - host: watson-ocr-service.withwatson-std-cluster.us-south.containers.mybluemix.net
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: watson-ocr-port-svc
+          servicePort: 8080

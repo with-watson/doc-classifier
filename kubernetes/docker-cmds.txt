@@ -1,0 +1,4 @@
+bx cr namespace-list
+bx cr namespace-add watson-ocr-service
+docker build -t registry.ng.bluemix.net/watson-ocr-service/watson-ocr-service:2018-05-04.0 .
+docker push registry.ng.bluemix.net/watson-ocr-service/watson-ocr-service:2018-05-04.0

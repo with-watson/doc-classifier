@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: watson-ocr-port-svc
+spec:
+  selector:
+    app: watson-ocr-svc
+  ports:
+   - name: watson-ocr-port
+     protocol: TCP
+     port: 8080
