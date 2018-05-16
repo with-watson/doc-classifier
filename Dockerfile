@@ -2,7 +2,6 @@
 FROM node:9
 
 RUN apt-get update -y
-RUN apt-get install -y apt-utils tesseract-ocr poppler-utils
 
 # add project files
 WORKDIR /app
