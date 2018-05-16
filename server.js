@@ -48,31 +48,26 @@ const acceptableOutputTypes = [
   'text'
 ]
 
-// cheap temporary auth ... this is NOT secure
+// Cheap temporary auth ... this is NOT secure
 const secret = process.env.TDNS_SECRET || 'topsecret';
+
+
 
 // NLU Instance
 const NaturalLanguageUnderstandingV1 = require('watson-developer-cloud/natural-language-understanding/v1.js');
 const natural_language_understanding = new NaturalLanguageUnderstandingV1({
-  'username': 'f42be6ef-cc87-4525-8bb3-04b9048cf8a4',
-  'password': 'iHzab2ROlxA7',
+  'username': process.env.NLU_USERNAME,
+  'password': process.env.NLU_PASSWORD,
   'version': '2018-03-16'
 });
 var paramsNLU = {
   'text': 'IBM is an American multinational technology company headquartered in Armonk, New York, United States, with operations in over 170 countries.',
+  
   'features': {
     'entities': {
-      'emotion': true,
-      'sentiment': true,
-      'limit': 2
-    },
-    'keywords': {
-      'emotion': true,
-      'sentiment': true,
-      'limit': 2
-    }
-  }
-}
+      'model': process.env.WKS_MODEL_ID
+  }}
+};
 
 
 
@@ -90,6 +85,73 @@ var paramsDiscovery = {
 };
 
 
+// Disable/Enable Javascript log
+console.log = function() {}
+
+
+// Reading entity-type.properties local file, contains entity key & entity list.
+const eTypeFilename = process.env.ENTITY_TYPE_FILE_NAME + '.properties';
+var eTypeList = [];
+fs.readFile( eTypeFilename, 'utf8', function(err, data) {
+  if (err) {
+    console.error('ERROR: Property file not found, file name: ' + eTypeFilename);
+    return;
+  }
+  var lines = data.split(/\r?\n/);
+
+  lines.forEach( function(l) {
+    eTypeList.push(JSON.parse(l));
+  });
+});
+
+
+
+// Reading entity-type.properties local file, contains entity key & entity name.
+const eNameFilename = process.env.ENTITY_NAME_FILE_NAME + '.properties';
+var eNameList = [];
+fs.readFile( eNameFilename, 'utf8', function(err, data) {
+  if (err) {
+    console.error('ERROR: Property file not found, file name: ' + eNameFilename);
+    return;
+  }
+  var lines = data.split(/\r?\n/);
+
+  lines.forEach( function(l) {
+    eNameList.push(JSON.parse(l));
+  });
+});
+
+
+
+// Get the entity key and the corresponding value.
+var entityKey = '';
+var entityName = '';
+function getEntity (uniqueEntityTypeList) {
+
+  eTypeList.forEach( function(e, i) {
+
+    var eSet = e[ 'entity_' + (i+1) ];
+    eSet.forEach( function(e) {
+      uniqueEntityTypeList.forEach( function(u) {
+        if( e.toLowerCase() == u.toLowerCase() ) {
+          entityKey = 'entity_' + (i+1);
+          return;
+        }      
+      });
+    });
+
+  });
+
+  eNameList.forEach( function(e) {
+    if (e[entityKey] != undefined) {
+      entityName = e[entityKey];
+      return;
+    }
+  });
+}
+
+
+
 app.use((req, res, next) => {
   if (req.header('key') !== secret) {
     res.status(401).send('unauthorized')
@@ -98,12 +160,13 @@ app.use((req, res, next) => {
   }
 })
 
+
 apiRoutes.post('/adc', upload.single('file'), async (req, res, next) => {
   
   // Basic Validation: Verify a file was included
   if (!req.file) {
     next({
-      message: 'no image found in file field'
+      message: 'no file found in file field'
     })
     return
   // verify it is an acceptable MIME type
@@ -145,6 +208,7 @@ apiRoutes.post('/adc', upload.single('file'), async (req, res, next) => {
     pdf: 'pdf'
   }
 
+
   // Create a tmp dir, set our base file
   const tmpDir = `tmp/_${req.file.filename}`
   const outbase = `${tmpDir}/${req.file.filename}`
@@ -168,7 +232,7 @@ apiRoutes.post('/adc', upload.single('file'), async (req, res, next) => {
     //Rule [1]: Check entity in the file name.
     var fileName = req.file.originalname;
     var nameList = fileName.replace('.pdf', '').split(' ');
-    //console.log(nameList);
+    console.log(nameList);
     //res.status(200).send(nameList);
     
 
@@ -176,27 +240,51 @@ apiRoutes.post('/adc', upload.single('file'), async (req, res, next) => {
     extract(outbase, { firstPage: 2, lastPage: 4, splitPages: false }, function (err, text) {
       if (err) {
         console.dir(err)
-        return
+        res.json('error:', err);
+        return;
       }
+
       
-      text = text.toString().replace(/ +(?= )/g,'');  // Replace multiple spaces with a single space.
-      text = text.toString().replace(/\n/g,"");       // Remove all /n.
-      text = text.split(' ').slice(0, 500).join(' ');  // Take only initial 100 words.
-      console.log(text);
+      entityKey = '';
+      entityName = '';
+      
+      // Java-script Text Manipulation
+      text = text.toString().replace(/ +(?= )/g,'');    // Replace multiple spaces with a single space.
+      text = text.toString().replace(/\n/g,"");         // Remove all /n.
+      text = text.split(' ').slice(0, 200).join(' ');   // Take only initial 100 words.
+      
+      paramsNLU.text = text;
+      console.log('paramsNLU = ' + JSON.stringify(paramsNLU));
 
-
-      // Call NLU
-      paramsNLU.text = encodeURI(text);
+      
+      // Call Watson NLU Service
       natural_language_understanding.analyze(paramsNLU, function(err, response) {
+        
         if (err) {
           console.log('error:', err);
           res.json('error:', err);
         } else
-          res.json(JSON.stringify(response, null, 2));
+          var entityTypeList = [];
+          response.entities.forEach( function( e ) {
+              entityTypeList.push(e.type);
+          });
+
+          // Javascript function to remove duplicate entries.
+          var uniqueEntityTypeList = entityTypeList.filter(function(item, pos) {
+              return entityTypeList.indexOf(item) == pos;
+          })
+
+          getEntity (uniqueEntityTypeList);
+          console.log('uniqueEntityTypeList = ' + uniqueEntityTypeList);
+          
+          if(entityName != '')
+            res.json ("File type detected as '" + entityName + "'");
+          else 
+            res.json ('Could not detect the file type.');
       });
 
 
-      // Call Discovery
+      // Call Watson Discovery Service
       /*paramsDiscovery.query = encodeURI(text);
       console.dir(paramsDiscovery.query);
       discovery.query(paramsDiscovery, (error, response) => {
@@ -209,11 +297,6 @@ apiRoutes.post('/adc', upload.single('file'), async (req, res, next) => {
       });*/
 
     });
-
-
-    //Rule [4]: Identify entity using rulebase.
-
-
 
   } else {
     console.dir('Non PDF file is not supported.');
