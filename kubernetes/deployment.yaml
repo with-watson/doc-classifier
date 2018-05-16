@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: doc-classifier-deployment
+  name: doc-classifier-msvc-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: doc-classifier
+      app: doc-classifier-msvc
   template:
     metadata:
       labels:
-        app: doc-classifier
+        app: doc-classifier-msvc
     spec:
       containers:
-      - name: doc-classifier-service
-        image: 'registry.ng.bluemix.net/doc-classifier-service/doc-classifier-service:2018-05-16.0'
+      - name: doc-classifier-micro-service
+        image: 'registry.ng.bluemix.net/doc-classifier-micro-service/doc-classifier-micro-service:2018-05-16.0'
         env:
           - name: PORT
             value: "8080"
@@ -22,7 +22,7 @@ spec:
             value: "value"
         resources:
           requests:
-            memory: "256Mi"
+            memory: "512Mi"
             cpu: "0.25"
           limits:
             memory: "1024Mi"

@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: doc-classifier-port-svc
+  name: doc-classifier-msvc-port-service
 spec:
   selector:
-    app: doc-classifier-svc
+    app: doc-classifier-msvc
   ports:
-   - name: doc-classifier-port
+   - name: doc-classifier-msvc-port
      protocol: TCP
      port: 8080
