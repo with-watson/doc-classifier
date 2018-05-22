@@ -11,6 +11,7 @@ const zpad = require('zpad')
 const path = require('path')
 const rimrafPromise = require('./util/rimrafPromise')
 const extract = require('pdf-text-extract')
+const prettyjson = require('prettyjson');
 
 // build app
 const app = express()
@@ -50,7 +51,7 @@ const acceptableOutputTypes = [
 
 // Cheap temporary auth ... this is NOT secure
 const secret = process.env.TDNS_SECRET || 'topsecret';
-
+const e_name = 'FORM_TYPE';
 
 
 // NLU Instance
@@ -86,7 +87,7 @@ var paramsDiscovery = {
 
 
 // Disable/Enable Javascript log
-console.log = function() {}
+//console.log = function() {}
 
 
 // Reading entity-type.properties local file, contains entity key & entity list.
@@ -106,7 +107,7 @@ fs.readFile( eTypeFilename, 'utf8', function(err, data) {
 
 
 
-// Reading entity-type.properties local file, contains entity key & entity name.
+// Reading entity-name.properties local file, contains entity key & entity name.
 const eNameFilename = process.env.ENTITY_NAME_FILE_NAME + '.properties';
 var eNameList = [];
 fs.readFile( eNameFilename, 'utf8', function(err, data) {
@@ -126,29 +127,37 @@ fs.readFile( eNameFilename, 'utf8', function(err, data) {
 // Get the entity key and the corresponding value.
 var entityKey = '';
 var entityName = '';
-function getEntity (uniqueEntityTypeList) {
+
+function getEntityFileName (fileName) {
 
   eTypeList.forEach( function(e, i) {
 
     var eSet = e[ 'entity_' + (i+1) ];
-    eSet.forEach( function(e) {
-      uniqueEntityTypeList.forEach( function(u) {
-        if( e.toLowerCase() == u.toLowerCase() ) {
-          entityKey = 'entity_' + (i+1);
-          return;
-        }      
-      });
+    //console.log ('eSet = ' + eSet);
+    eSet.forEach( function(e, j) {
+
+      //console.log ('fileName = ' + fileName + ' & e = ' + e + ' & i = ' + i);
+      if( fileName.indexOf(e.toUpperCase()) != -1 ) {
+        entityKey = 'entity_' + (i+1);
+        //console.log ('Gotcha i = ' + i + ' & e = ' + e);
+        return;
+      }
+
     });
 
   });
 
-  eNameList.forEach( function(e) {
-    if (e[entityKey] != undefined) {
-      entityName = e[entityKey];
-      return;
-    }
-  });
+  if(entityKey != '') {
+    eNameList.forEach( function(e) {
+      if (e[entityKey] != undefined) {
+        entityName = e[entityKey];
+        return;
+      }
+    });
+  }
+
 }
+
 
 
 
@@ -159,6 +168,7 @@ app.use((req, res, next) => {
     next()
   }
 })
+
 
 
 apiRoutes.post('/adc', upload.single('file'), async (req, res, next) => {
@@ -229,11 +239,19 @@ apiRoutes.post('/adc', upload.single('file'), async (req, res, next) => {
 
   if (req.file.mimetype === 'application/pdf') {
 
+    entityKey = '';
+    entityName = '';
+
     //Rule [1]: Check entity in the file name.
     var fileName = req.file.originalname;
-    var nameList = fileName.replace('.pdf', '').split(' ');
-    console.log(nameList);
-    //res.status(200).send(nameList);
+    getEntityFileName (fileName);
+    //var nameList = fileName.replace('.pdf', '').split(' '); //console.log(nameList);
+    
+    if(entityName != '') {
+      console.log('Entity matched in Rule [1] only. The entityKey = ' + entityKey + ' & entityName = ' + entityName);
+      res.json ("File type detected as '" + entityName + "'");
+      return;
+    }
     
 
     //Rule [2]: Reading First two pages of the PDF file & find entity using Discovery
@@ -245,16 +263,13 @@ apiRoutes.post('/adc', upload.single('file'), async (req, res, next) => {
       }
 
       
-      entityKey = '';
-      entityName = '';
-      
       // Java-script Text Manipulation
       text = text.toString().replace(/ +(?= )/g,'');    // Replace multiple spaces with a single space.
       text = text.toString().replace(/\n/g,"");         // Remove all /n.
-      text = text.split(' ').slice(0, 200).join(' ');   // Take only initial 100 words.
+      text = text.split(' ').slice(0, 1000).join(' ');   // Take only initial 1000 words.
       
       paramsNLU.text = text;
-      console.log('paramsNLU = ' + JSON.stringify(paramsNLU));
+      console.log('paramsNLU = ' + prettyjson.render(paramsNLU));
 
       
       // Call Watson NLU Service
@@ -264,19 +279,15 @@ apiRoutes.post('/adc', upload.single('file'), async (req, res, next) => {
           console.log('error:', err);
           res.json('error:', err);
         } else
-          var entityTypeList = [];
+          console.log ('response.entities = ' + prettyjson.render(response.entities));
+
           response.entities.forEach( function( e ) {
-              entityTypeList.push(e.type);
+            if(e.type == e_name) {
+              entityName = e.text;
+              return;
+            }
           });
 
-          // Javascript function to remove duplicate entries.
-          var uniqueEntityTypeList = entityTypeList.filter(function(item, pos) {
-              return entityTypeList.indexOf(item) == pos;
-          })
-
-          getEntity (uniqueEntityTypeList);
-          console.log('uniqueEntityTypeList = ' + uniqueEntityTypeList);
-          
           if(entityName != '')
             res.json ("File type detected as '" + entityName + "'");
           else 
