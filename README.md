@@ -6,21 +6,21 @@ It is a micro service which takes a PDF file as an input and return the type of 
 
 ## Included components
 
-> * [Watson Natural Language Understanding](https://console.bluemix.net/catalog/services/natural-language-understanding/?cm_sp=dw-bluemix-_-code-_-devcenter): A IBM Cloud service that can analyze text to extract meta-data from content such as concepts, entities, keywords, categories, sentiment, emotion, relations, semantic roles, using natural language understanding.
+> * [Watson Natural Language Understanding (NLU)](https://console.bluemix.net/catalog/services/natural-language-understanding): A IBM Cloud service that can analyze text to extract meta-data from content such as concepts, entities, keywords, categories, sentiment, emotion, relations, semantic roles, using natural language understanding.
 
-> * [IBM Watson Knowledge Studio](https://console.bluemix.net/catalog/services/knowledge-studio): Teach Watson the language of your domain with custom models that identify entities and relationships unique to your industry, in unstructured text. Build your models in a collaborative environment designed for both developers and domain experts, without needing to write code. Use the models in Watson Discovery, Watson Natural Language Understanding, and Watson Explorer.
+> * [IBM Watson Knowledge Studio (WKS)](https://console.bluemix.net/catalog/services/knowledge-studio): Teach Watson the language of your domain with custom models that identify entities and relationships unique to your industry, in unstructured text. Build your models in a collaborative environment designed for both developers and domain experts, without needing to write code. Use the models in Watson Discovery, Watson Natural Language Understanding, and Watson Explorer.
 
 
 
 ## Github
 
-	> https://github.com/with-watson/doc-classifier
+> https://github.com/with-watson/doc-classifier
 
 
 
 ## Install
 
-TODO
+> TODO
 
 
 
@@ -29,17 +29,14 @@ TODO
 > `POST -> /api/adc`
 
 
-* HEADER:
-
+> * HEADER:
 > key: {string} secret key
 
-* FORM DATA:
+> * FORM DATA:
+> file: PDF file only
 
-> File: PDF file only
-
-* OUTPUT:
-
-> File Type: text value
+> * OUTPUT:
+> File_Type: text value
 
 
 
@@ -47,9 +44,9 @@ TODO
 
 Environment Variables:
 
-* PORT: the port that the application will listen on. Default `3000`
+> * PORT: the port that the application will listen on. Default `3000`
 
-* TDNS_SECRET: simple key for auth control. Default key = `topsecret`
+> * TDNS_SECRET: simple key for auth control. Default key = `topsecret`
 
 
 
