@@ -14,7 +14,7 @@ It is a micro service which takes a PDF file as an input and return the type of 
 
 ## Github
 
-> https://github.com/with-watson/doc-classifier
+https://github.com/with-watson/doc-classifier
 
 
 
@@ -26,16 +26,16 @@ It is a micro service which takes a PDF file as an input and return the type of 
 
 ## API
 
-> `POST -> /api/adc`
+`POST -> /api/adc`
 
 
-> * HEADER:
+* HEADER:
 > key: {string} secret key
 
-> * FORM DATA:
+* FORM DATA:
 > file: PDF file only
 
-> * OUTPUT:
+* OUTPUT:
 > File_Type: text value
 
 
@@ -44,9 +44,9 @@ It is a micro service which takes a PDF file as an input and return the type of 
 
 Environment Variables:
 
-> * PORT: the port that the application will listen on. Default `3000`
+* PORT: the port that the application will listen on. Default `3000`
 
-> * TDNS_SECRET: simple key for auth control. Default key = `topsecret`
+* TDNS_SECRET: simple key for auth control. Default key = `topsecret`
 
 
 
