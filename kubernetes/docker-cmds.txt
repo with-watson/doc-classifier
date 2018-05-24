@@ -1,4 +1,4 @@
 bx cr namespace-list
-bx cr namespace-add doc-classifier-service
-docker build -t registry.ng.bluemix.net/doc-classifier-service/doc-classifier-service:2018-05-16.0 .
-docker push registry.ng.bluemix.net/doc-classifier-service/doc-classifier-service:2018-05-16.0
+bx cr namespace-add doc-classifier
+docker build -t registry.ng.bluemix.net/doc-classifier/doc-classifier:2018-05-23.0 .
+docker push registry.ng.bluemix.net/doc-classifier/doc-classifier:2018-05-23.0

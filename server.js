@@ -254,7 +254,7 @@ apiRoutes.post('/adc', upload.single('file'), async (req, res, next) => {
     }
     
 
-    //Rule [2]: Reading First two pages of the PDF file & find entity using Discovery
+    //Rule [2]: Reading First two pages of the PDF file & find entity using Watson NLU.
     extract(outbase, { firstPage: 2, lastPage: 4, splitPages: false }, function (err, text) {
       if (err) {
         console.dir(err)

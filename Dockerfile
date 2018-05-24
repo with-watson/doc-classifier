@@ -1,5 +1,5 @@
 # latest official node image
-FROM node:9
+FROM node:10
 
 RUN apt-get update -y
 

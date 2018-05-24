@@ -1,6 +1,6 @@
 # Document Classifier Service
 
-It is a micro service which takes a PDF file as an input and return the type of the file. It first check the file name for the file type detection. If nothing matches then it analyze the first few words (1000 words) of the PDF file using Watson NLU to check the entity name 'FORM_TYPE' using Watson Knowledge Studio trained custom model id. If it find some value then it got return to the user as a text string (ex: File type detected as 'Form 10K') else it says 'Could not detect the file type'.
+It is a micro service which takes a PDF file as an input and return the type of the file. Currently it supports Form 10-K & Form 8-K file types. It first check the file name for the file type detection. If nothing matches then it analyze the first few words (1000 words) of the PDF file using Watson NLU to check the entity name 'FORM_TYPE' using Watson Knowledge Studio trained custom model id. If it find some value then it got return to the user as a text string (ex: File type detected as 'Form 10K') else it says 'Could not detect the file type'.
 
 
 
@@ -29,14 +29,14 @@ https://github.com/with-watson/doc-classifier
 `POST -> /api/adc`
 
 
-* HEADER:
-> key: {string} secret key
+> HEADER:
+* key: {string} secret key
 
-* FORM DATA:
-> file: PDF file only
+> FORM DATA:
+* file: PDF file only
 
-* OUTPUT:
-> File_Type: text value
+> OUTPUT:
+* File_Type: text value
 
 
 

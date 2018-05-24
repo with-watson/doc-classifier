@@ -1,7 +1,7 @@
 {
   "name": "doc-classifier",
   "version": "0.0.1",
-  "description": "a docker container containing a node API to extract the title of a pdf file.",
+  "description": "A docker container containing a node API to extract the file type of a pdf file. Currently it supports Form 10-K & Form 8-K file types.",
   "main": "server.js",
   "dependencies": {
     "dotenv": "^5.0.1",

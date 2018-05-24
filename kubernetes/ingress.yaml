@@ -1,17 +1,17 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: doc-classifier-msvc-ingress
+  name: dc-msvc-ingress
 spec:
   tls:
   - hosts:
-    - doc-classifier-micro-service.withwatson-std-cluster.us-south.containers.mybluemix.net
+    - dc-micro-service.withwatson-std-cluster.us-south.containers.mybluemix.net
     secretName: withwatson-std-cluster
   rules:
-  - host: doc-classifier-micro-service.withwatson-std-cluster.us-south.containers.mybluemix.net
+  - host: dc-micro-service.withwatson-std-cluster.us-south.containers.mybluemix.net
     http:
       paths:
       - path: /
         backend:
-          serviceName: doc-classifier-msvc-port-service
+          serviceName: dc-msvc-port-service
           servicePort: 8080
