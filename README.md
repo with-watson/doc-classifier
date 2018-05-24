@@ -18,9 +18,10 @@ https://github.com/with-watson/doc-classifier
 
 
 
-## Install
+## Local Run
 
-> TODO
+* npm install
+* npm start
 
 
 
