@@ -102,8 +102,7 @@ Environment Variables:
 
 ## Demo
 
-URL: 
-> http://dc-micro-service.withwatson-std-cluster.us-south.containers.mybluemix.net
+http://dc-micro-service.withwatson-std-cluster.us-south.containers.mybluemix.net/api/adc
 
 <img src="/readme-images/postman request.gif" width="100%"/>
 
