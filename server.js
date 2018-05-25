@@ -1,24 +1,22 @@
-const express = require('express')
-const morgan = require('morgan')
-const upload = require('multer')({dest: 'tmp/'})
-const cp = require('child_process')
-const mimetype = require('mime-types')
-const helmet = require('helmet')
-const fs = require('fs')
-const glob = require('glob-all')
-const util = require('util')
-const zpad = require('zpad')
-const path = require('path')
-const rimrafPromise = require('./util/rimrafPromise')
-const extract = require('pdf-text-extract')
-const prettyjson = require('prettyjson');
+const express     = require('express')
+const fs          = require('fs')
+const util        = require('util')
+const path        = require('path')
+const helmet      = require('helmet')
+const morgan      = require('morgan')
+const cp          = require('child_process')
+const mimetype    = require('mime-types')
+const prettyjson  = require('prettyjson')
+const extract     = require('pdf-text-extract')
+const upload      = require('multer')({dest: 'tmp/'})
+
 
 // build app
-const app = express()
+const app         = express()
 
 // promisify functions
-const execPromise = util.promisify(cp.exec)
-const mkdirPromise = util.promisify(fs.mkdir)
+const execPromise   = util.promisify(cp.exec)
+const mkdirPromise  = util.promisify(fs.mkdir)
 const renamePromise = util.promisify(fs.rename)
 
 require('dotenv').config({ silent: true });
@@ -32,11 +30,6 @@ app.use(helmet())
 app.use(morgan('dev'))
 
 const apiRoutes = express.Router()
-
-// default values
-const language = 'eng'
-const psm = 6
-const output = 'text'
 
 const acceptableMIMETypes = [
   'image/png',
@@ -206,12 +199,6 @@ apiRoutes.post('/adc', upload.single('file'), async (req, res, next) => {
   }
 
 
-  // Set config values for executables
-  const outputType = req.body.output || output
-  let outputParam = ''
-  if (outputType !== 'text') {
-    outputParam = outputType
-  }
   // Map of output types to extension
   const extMap = {
     text: 'txt',
@@ -269,7 +256,7 @@ apiRoutes.post('/adc', upload.single('file'), async (req, res, next) => {
       text = text.split(' ').slice(0, 1000).join(' ');   // Take only initial 1000 words.
       
       paramsNLU.text = text;
-      console.log('paramsNLU = ' + prettyjson.render(paramsNLU));
+      //console.log('paramsNLU = ' + prettyjson.render(paramsNLU));
 
       
       // Call Watson NLU Service
@@ -289,7 +276,7 @@ apiRoutes.post('/adc', upload.single('file'), async (req, res, next) => {
           });
 
           if(entityName != '')
-            res.json ("File type detected as '" + entityName + "'");
+            res.json ("File type detected as 'Form " + entityName + "'");
           else 
             res.json ('Could not detect the file type.');
       });

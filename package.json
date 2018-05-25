@@ -6,7 +6,6 @@
   "dependencies": {
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
-    "glob-all": "^3.1.0",
     "helmet": "^3.12.1",
     "mime-types": "^2.1.18",
     "morgan": "^1.9.0",
@@ -14,8 +13,7 @@
     "pdf-text-extract": "^1.5.0",
     "prettyjson": "^1.2.1",
     "rimraf": "^2.6.2",
-    "watson-developer-cloud": "^3.4.2",
-    "zpad": "^0.5.0"
+    "watson-developer-cloud": "^3.4.2"
   },
   "devDependencies": {
     "ajv": "^6.5.0",

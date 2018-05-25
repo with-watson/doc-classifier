@@ -2,6 +2,10 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: dc-msvc-ingress
+  annotations:
+    ingress.bluemix.net/client-max-body-size: 10m
+    ingress.bluemix.net/proxy-connect-timeout: 180s
+    ingress.bluemix.net/proxy-read-timeout: 180s
 spec:
   tls:
   - hosts:
