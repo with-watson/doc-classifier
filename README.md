@@ -34,13 +34,13 @@ https://github.com/with-watson/doc-classifier
 
 
 - HEADER:
-key: {string} secret key
+	- key: {string} secret key
 
 - FORM DATA:
-file: PDF file only
+	- file: PDF file only
 
 - OUTPUT:
-File_Type: text value
+	- File_Type: text value
 
 
 
@@ -54,11 +54,6 @@ Environment Variables:
 
 
 ## Docker Image Push
-
-- Doker Image:
-	- docker images | List of existing images.
-	- docker rmi image_id | Remove an image with a numerical id 'image_id'.
-	- docker pull node:10 | Pull the node version 10 image from docker hub.
 
 - IBM Cloud plugin & Namespaces
 	- bx plugin list | List IBM Cloud installed plugin.
@@ -82,7 +77,7 @@ Environment Variables:
 	- minikube stop
 	- minikube delete
 
-- kubectl apply
+- kubectl apply:
 	- Goto doc-classifier/kubernetes folder and run following commands after modifying all the three files:
 	- brew install kubectl
 	- kubectl apply -f deployment.yaml
@@ -90,14 +85,16 @@ Environment Variables:
 	- kubectl apply -f ingress.yaml
 
 - Build docker image:
-	- docker images  | List images
+	- docker images  | List of existing images.
+	- docker rmi -f image_id | Remove an image with a numerical id 'image_id'.
+	- docker pull node:10 | Pull the node version 10 image from docker hub.
 	- docker build -t dc-micro-service .   | Build local image
 	- docker build -t registry.ng.bluemix.net/dc-micro-service/dc-micro-service:2018-05-23.0 .  | Build  image in IBM Cloud
 
 - Push docker image:
 	- docker push registry.ng.bluemix.net/dc-micro-service/dc-micro-service:2018-05-23.0  | Push image
 	- bx cr image-list | Images list 
-	- The url is: dc-micro-service.withwatson-std-cluster.us-south.containers.mybluemix.net
+	- The url is: http://dc-micro-service.withwatson-std-cluster.us-south.containers.mybluemix.net
 	- bx cr image-rm registry.ng.bluemix.net/dc-micro-service/dc-micro-service:2018-05-23.0 | Delete one or more images from IBM Cloud Container Registry.
 
 
@@ -106,7 +103,7 @@ Environment Variables:
 ## Demo
 
 URL: 
->dc-micro-service.withwatson-std-cluster.us-south.containers.mybluemix.net/api/adc
+> http://dc-micro-service.withwatson-std-cluster.us-south.containers.mybluemix.net
 
 <img src="/readme-images/postman request.gif" width="100%"/>
 
