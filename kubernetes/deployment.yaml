@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: dc-micro-service
-        image: 'registry.ng.bluemix.net/dc-micro-service/dc-micro-service:2018-05-23.0'
+        image: 'registry.ng.bluemix.net/dc-micro-service/dc-micro-service:2018-05-25.0'
         env:
           - name: PORT
             value: "8080"
