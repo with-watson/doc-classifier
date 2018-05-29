@@ -236,7 +236,7 @@ apiRoutes.post('/adc', upload.single('file'), async (req, res, next) => {
     
     if(entityName != '') {
       console.log('Entity matched in Rule [1] only. The entityKey = ' + entityKey + ' & entityName = ' + entityName);
-      res.json ("File type detected as '" + entityName + "'");
+      res.status(200).json ("File type detected as 'Form " + entityName + "'");
       return;
     }
     
@@ -276,9 +276,9 @@ apiRoutes.post('/adc', upload.single('file'), async (req, res, next) => {
           });
 
           if(entityName != '')
-            res.json ("File type detected as 'Form " + entityName + "'");
+            res.status(200).json ("File type detected as 'Form " + entityName + "'");
           else 
-            res.json ('Could not detect the file type.');
+            res.status(200).json ('Could not detect the file type.');
       });
 
 
