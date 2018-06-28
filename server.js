@@ -251,8 +251,8 @@ apiRoutes.post('/adc', upload.single('file'), async (req, res, next) => {
 
       
       // Java-script Text Manipulation
-      text = text.toString().replace(/ +(?= )/g,'');    // Replace multiple spaces with a single space.
-      text = text.toString().replace(/\n/g,"");         // Remove all /n.
+      text = text.toString().replace(/ +(?= )/g,'');     // Replace multiple spaces with a single space.
+      text = text.toString().replace(/\n/g,"");          // Remove all /n.
       text = text.split(' ').slice(0, 1000).join(' ');   // Take only initial 1000 words.
       
       paramsNLU.text = text;
@@ -266,7 +266,7 @@ apiRoutes.post('/adc', upload.single('file'), async (req, res, next) => {
           console.log('error:', err);
           res.json('error:', err);
         } else
-          console.log ('response.entities = ' + prettyjson.render(response.entities));
+          //console.log ('response.entities = ' + prettyjson.render(response.entities));
 
           response.entities.forEach( function( e ) {
             if(e.type == e_name) {
